@@ -17,12 +17,15 @@ def fill(df):
     """
     df = df.drop(columns=["Weighted_Price"])
 
+    # Fill Close with previous row value
     df["Close"] = df["Close"].fillna(method="ffill")
 
-    df[["High", "Low", "Open"]] = df[["High", "Low", "Open"]].fillna(
-        df["Close"], axis=0
-    )
+    # Fill High, Low, Open with same-row Close value
+    df["High"] = df["High"].fillna(df["Close"])
+    df["Low"] = df["Low"].fillna(df["Close"])
+    df["Open"] = df["Open"].fillna(df["Close"])
 
+    # Fill volume columns with 0
     df["Volume_(BTC)"] = df["Volume_(BTC)"].fillna(0)
     df["Volume_(Currency)"] = df["Volume_(Currency)"].fillna(0)
 
