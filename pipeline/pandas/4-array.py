@@ -3,8 +3,6 @@
 Selects the last 10 rows of High and Close columns as a NumPy array.
 """
 
-import numpy as np
-
 
 def array(df):
     """
@@ -15,6 +13,6 @@ def array(df):
         df (pd.DataFrame): Input DataFrame containing High and Close columns.
 
     Returns:
-        np.ndarray: NumPy array of the selected values.
+        numpy.ndarray: NumPy array of the selected values.
     """
     return df[["High", "Close"]].tail(10).to_numpy()
