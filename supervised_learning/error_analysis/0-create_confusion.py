@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
 """0-create_confusion.py"""
+
 import numpy as np
+
 
 def create_confusion_matrix(labels, logits):
     """
     Creates a confusion matrix.
 
     Args:
-        labels (numpy.ndarray): One-hot array of correct labels, shape (m, classes)
-        logits (numpy.ndarray): One-hot array of predicted labels, shape (m, classes)
+        labels (numpy.ndarray): One-hot array of correct labels,
+                                shape (m, classes)
+        logits (numpy.ndarray): One-hot array of predicted labels,
+                                shape (m, classes)
 
     Returns:
-        numpy.ndarray: Confusion matrix of shape (classes, classes) with dtype=float
+        numpy.ndarray: Confusion matrix of shape (classes, classes)
+                       with dtype=float.
                        Rows = true labels, Columns = predicted labels
     """
     m, classes = labels.shape
