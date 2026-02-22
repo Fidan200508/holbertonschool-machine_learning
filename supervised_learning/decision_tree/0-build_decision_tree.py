@@ -1,5 +1,19 @@
 #!/usr/bin/env python3
 
+"""
+0-build_decision_tree.py
+
+This module implements a simple Decision Tree in Python.
+
+Classes:
+- Node: Represents an internal node in the tree
+- Leaf: Represents a leaf node
+- Decision_Tree: The main tree class with a depth() method
+
+Each node keeps track of its depth, and max_depth_below() computes
+the maximum depth in the subtree from that node.
+"""
+
 import numpy as np
 
 
