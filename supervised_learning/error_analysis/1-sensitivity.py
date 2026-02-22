@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """1-sensitivity.py"""
+
 import numpy as np
 
 
@@ -13,6 +14,7 @@ def sensitivity(confusion):
 
     Returns:
         numpy.ndarray: Sensitivity for each class, shape (classes,)
+                       Calculated as TP / (TP + FN)
     """
     # True positives for each class are the diagonal elements
     true_positives = np.diag(confusion)
