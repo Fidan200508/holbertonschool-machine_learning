@@ -17,7 +17,7 @@ def f1_score(confusion):
 
     Returns:
         numpy.ndarray: F1 score for each class, shape (classes,)
-                       Calculated as 2 * (precision * sensitivity) / 
+                       Calculated as 2 * (precision * sensitivity) /
                        (precision + sensitivity)
     """
     rec = sensitivity(confusion)
