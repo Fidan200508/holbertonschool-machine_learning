@@ -34,11 +34,8 @@ def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
         if i > 1:
             # Calculate dA for the previous layer
             dA = np.matmul(W.T, dZ)
-            
             # Apply the dropout mask and scaling from the forward pass
-            # This is critical for consistency
             dA = (dA * cache['D{}'.format(i - 1)]) / keep_prob
-            
             # Calculate dZ for the hidden layer (derivative of tanh is 1 - A^2)
             dZ = dA * (1 - (A_prev ** 2))
 
