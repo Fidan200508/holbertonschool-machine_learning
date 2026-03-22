@@ -1,36 +1,42 @@
 #!/usr/bin/env python3
-"""Gradient descent with L2 regularization"""
+"""
+Contains the function l2_reg_gradient_descent
+"""
 import numpy as np
 
 
 def l2_reg_gradient_descent(Y, weights, cache, alpha, lambtha, L):
     """
-    Updates the weights and biases of a neural network using
-    gradient descent with L2 regularization.
-
-    Y: one-hot numpy.ndarray of shape (classes, m)
-    weights: dictionary of weights and biases
-    cache: dictionary of outputs of each layer
-    alpha: learning rate
-    lambtha: L2 regularization parameter
-    L: number of layers in the network
+    Updates weights and biases of a neural network using gradient
+    descent with L2 regularization
+    Args:
+        Y: one-hot numpy.ndarray (classes, m) containing correct labels
+        weights: dictionary of weights and biases
+        cache: dictionary of the outputs of each layer
+        alpha: learning rate
+        lambtha: L2 regularization parameter
+        L: number of layers of the network
+    Returns: None (updated in place)
     """
     m = Y.shape[1]
-    dZ = cache[f"A{L}"] - Y
+    # dZ for the last layer (Softmax + Cross-Entropy)
+    dZ = cache['A{}'.format(L)] - Y
 
-    for l in reversed(range(1, L + 1)):
-        A_prev = cache[f"A{l-1}"]
-        W = weights[f"W{l}"]
+    for i in range(L, 0, -1):
+        A_prev = cache['A{}'.format(i - 1)]
+        W_key = 'W{}'.format(i)
+        b_key = 'b{}'.format(i)
+        W = weights[W_key]
 
-        # Gradient of weights with L2 regularization
-        dW = (np.matmul(dZ, A_prev.T) / m) + (lambtha / m) * W
-        db = np.sum(dZ, axis=1, keepdims=True) / m
+        # Calculate dW with L2 regularization term: (lambda/m) * W
+        dW = (1 / m) * (np.matmul(dZ, A_prev.T) + (lambtha * W))
+        db = (1 / m) * np.sum(dZ, axis=1, keepdims=True)
 
-        # Update weights and biases
-        weights[f"W{l}"] -= alpha * dW
-        weights[f"b{l}"] -= alpha * db
+        if i > 1:
+            # Backpropagate to the previous layer
+            # Derivative of tanh: 1 - A^2
+            dZ = np.matmul(W.T, dZ) * (1 - (A_prev ** 2))
 
-        # Compute dZ for previous layer if not input
-        if l > 1:
-            dA_prev = np.matmul(W.T, dZ)
-            dZ = dA_prev * (1 - np.power(A_prev, 2))  # tanh derivative
+        # Update weights and biases in place
+        weights[W_key] -= alpha * dW
+        weights[b_key] -= alpha * db
