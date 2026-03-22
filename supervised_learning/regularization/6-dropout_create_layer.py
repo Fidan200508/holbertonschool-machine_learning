@@ -16,24 +16,25 @@ def dropout_create_layer(prev, n, activation, keep_prob, training=True):
         training: boolean indicating whether the model is in training mode
     Returns: the output of the new layer
     """
-    # Use VarianceScaling for weight initialization (standard for deep nets)
+    # Initialize weights using VarianceScaling (He et al.)
     init = tf.keras.initializers.VarianceScaling(
         scale=2.0,
         mode='fan_avg',
         distribution='uniform'
     )
 
-    # Create the Dense layer
+    # Define the Dense layer
     layer = tf.keras.layers.Dense(
         units=n,
         activation=activation,
         kernel_initializer=init
     )
 
-    # Pass the previous output through the dense layer
+    # Pass the previous layer output through the dense layer
     output = layer(prev)
 
-    # Apply dropout - note that rate = 1 - keep_prob
+    # Create the Dropout layer. Note: rate = 1 - keep_prob
+    # The training parameter determines if dropout is actually applied
     dropout = tf.keras.layers.Dropout(rate=1 - keep_prob)
 
     return dropout(output, training=training)
