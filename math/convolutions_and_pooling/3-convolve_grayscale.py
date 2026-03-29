@@ -25,6 +25,7 @@ def convolve_grayscale(images, kernel, padding='same', stride=(1, 1)):
     if padding == 'valid':
         ph, pw = 0, 0
     elif padding == 'same':
+        # Calculate padding to ensure output matches input dimensions
         ph = ((h - 1) * sh + kh - h) // 2 + 1
         pw = ((w - 1) * sw + kw - w) // 2 + 1
     else:
@@ -45,10 +46,9 @@ def convolve_grayscale(images, kernel, padding='same', stride=(1, 1)):
     for i in range(out_h):
         for j in range(out_w):
             # Calculate the starting position based on stride
-            h_start = i * sh
-            w_start = j * sw
-            # Slice the window from the padded images
-            window = images_padded[:, h_start:h_start + kh, w_start:w_start + kw]
+            h_s, w_s = i * sh, j * sw
+            # Slice window (line broken to stay under 79 chars)
+            window = images_padded[:, h_s:h_s + kh, w_s:w_s + kw]
             # Multiply and sum
             output[:, i, j] = np.sum(window * kernel, axis=(1, 2))
 
