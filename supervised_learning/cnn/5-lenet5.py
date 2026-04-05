@@ -1,17 +1,7 @@
 #!/usr/bin/env python3
-import tensorflow as tf
 from tensorflow import keras as K
 
 def lenet5(X):
-    """
-    Builds a modified LeNet-5 model using Keras.
-
-    Args:
-        X: K.Input of shape (m, 28, 28, 1)
-
-    Returns:
-        K.Model compiled with Adam optimizer and accuracy metrics
-    """
     he_init = K.initializers.HeNormal(seed=0)
 
     # Layer 1: Conv -> 6 filters, 5x5, same padding, ReLU
@@ -69,5 +59,4 @@ def lenet5(X):
         loss='categorical_crossentropy',
         metrics=['accuracy']
     )
-
     return model
