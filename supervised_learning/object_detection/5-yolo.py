@@ -32,36 +32,47 @@ class Yolo:
         Returns:
             (pimages, image_shapes)
         """
-        # Get model input dimensions from the loaded model
+        # Get model input dimensions
         input_w = self.model.input.shape[1]
         input_h = self.model.input.shape[2]
-        
+
         pimages = []
         image_shapes = []
 
         for img in images:
-            # 1. Save original shape (height, width)
+            # Save original shape (height, width)
             image_shapes.append(img.shape[:2])
 
-            # 2. Resize image using inter-cubic interpolation
+            # Resize with inter-cubic interpolation
             resized = cv2.resize(img, (input_w, input_h),
                                  interpolation=cv2.INTER_CUBIC)
 
-            # 3. Rescale pixel values to [0, 1]
+            # Rescale pixel values to [0, 1]
             rescaled = resized / 255.0
             pimages.append(rescaled)
 
-        # Convert lists to numpy arrays
+        # Convert to numpy arrays
         pimages = np.array(pimages)
         image_shapes = np.array(image_shapes)
 
         return pimages, image_shapes
 
-    # (Other methods process_outputs, filter_boxes, etc. remain here)
+    # Placeholder for previous methods to maintain class structure
+    def process_outputs(self, outputs, image_size):
+        """Processed outputs"""
+        pass
+
+    def filter_boxes(self, boxes, box_confidences, box_class_probs):
+        """Filters boxes"""
+        pass
+
+    def non_max_suppression(self, filtered_boxes, box_classes, box_scores):
+        """NMS"""
+        pass
 
     @staticmethod
     def load_images(folder_path):
-        """Loads all images from a specific folder"""
+        """Loads images"""
         image_paths = glob.glob(folder_path + '/*', recursive=False)
         images = [cv2.imread(path) for path in image_paths if path]
         return [img for img in images if img is not None], image_paths
