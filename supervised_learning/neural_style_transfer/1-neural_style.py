@@ -42,7 +42,7 @@ class NST:
         self.content_image = self.scale_image(content_image)
         self.alpha = alpha
         self.beta = beta
-        # Load the model and save to instance attribute
+        # Initialize the model attribute
         self.load_model()
 
     @staticmethod
@@ -70,28 +70,47 @@ class NST:
 
     def load_model(self):
         """
-        Creates the model used to calculate cost using VGG19
+        Creates the model used to calculate cost.
+        Replaces MaxPooling2D with AveragePooling2D.
         """
-        # Load pre-trained VGG19 without the top classification layers
-        vgg = tf.keras.applications.vGG19(
-            include_top=False,
-            weights='imagenet'
-        )
+        # Load the pre-trained VGG19
+        vgg = tf.keras.applications.VGG19(include_top=False,
+                                          weights='imagenet')
 
-        # Replace MaxPool layers with AveragePool layers for smoother gradients
-        # as suggested in the original Leon Gatys paper
-        custom_objects = {'MaxPooling2D': tf.keras.layers.AveragePooling2D}
-        vgg.trainable = False
+        # Customizing the model: Replace MaxPool with AveragePool
+        # We must use the functional API to link existing weights
+        x = vgg.input
+        model_outputs = []
+        
+        # Prepare a dictionary to store style layer outputs by name
+        style_outputs = {name: None for name in self.style_layers}
+        content_output = None
 
-        # Get output tensors for style and content layers
-        outputs = [vgg.get_layer(name).output for name in self.style_layers]
-        outputs.append(vgg.get_layer(self.content_layer).output)
+        for layer in vgg.layers[1:]:
+            if isinstance(layer, tf.keras.layers.MaxPooling2D):
+                # Create AveragePool layer with identical parameters
+                x = tf.keras.layers.AveragePooling2D(
+                    pool_size=layer.pool_size,
+                    strides=layer.strides,
+                    padding=layer.padding,
+                    name=layer.name
+                )(x)
+            else:
+                # Keep the layer (Conv2D) and its pre-trained weights
+                x = layer(x)
 
-        # Build the final functional model
-        model = tf.keras.Model(inputs=vgg.input, outputs=outputs)
+            # Check if this layer is one we need to extract
+            if layer.name in self.style_layers:
+                style_outputs[layer.name] = x
+            if layer.name == self.content_layer:
+                content_output = x
 
-        # Ensure the model is not trainable to save memory and compute
-        for layer in model.layers:
-            layer.trainable = False
+        # Ensure order: all style layers (in order) then the content layer
+        for name in self.style_layers:
+            model_outputs.append(style_outputs[name])
+        model_outputs.append(content_output)
 
+        # Build and finalize
+        model = tf.keras.Model(inputs=vgg.input, outputs=model_outputs)
+        model.trainable = False
         self.model = model
