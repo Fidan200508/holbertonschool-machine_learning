@@ -21,7 +21,7 @@ class Neuron:
             raise ValueError("nx must be a positive integer")
 
         # Weights initialized using a random normal distribution
-        # Shape is (1, nx) to allow for vectorization with input X
+        # Shape is (1, nx) to allow vectorization with input X
         self.W = np.random.randn(1, nx)
         # Bias initialized to 0
         self.b = 0
