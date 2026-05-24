@@ -1,54 +1,60 @@
 #!/usr/bin/env python3
-"""Finds best number of clusters using BIC"""
+"""Expectation Maximization algorithm for GMM"""
 
 import numpy as np
 
-expectation_maximization = __import__('8-EM').expectation_maximization
+initialize = __import__('4-initialize').initialize
+expectation = __import__('6-expectation').expectation
+maximization = __import__('7-maximization').maximization
 
 
-def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
-    """Finds best number of clusters for a GMM using BIC"""
+def expectation_maximization(X, k, iterations=1000, tol=1e-5, verbose=False):
+    """Performs expectation maximization for a GMM"""
 
     if (not isinstance(X, np.ndarray) or len(X.shape) != 2 or
-            not isinstance(kmin, int) or kmin <= 0 or
+            not isinstance(k, int) or k <= 0 or
             not isinstance(iterations, int) or iterations <= 0 or
             not isinstance(tol, float) or tol < 0 or
             not isinstance(verbose, bool)):
-        return None, None, None, None
+        return None, None, None, None, None
 
-    n, d = X.shape
+    pi, m, S = initialize(X, k)
+    if pi is None:
+        return None, None, None, None, None
 
-    if kmax is None:
-        kmax = n
+    g, l = expectation(X, pi, m, S)
+    if g is None:
+        return None, None, None, None, None
 
-    if not isinstance(kmax, int) or kmax <= 0 or kmax - kmin < 1:
-        return None, None, None, None
+    if verbose:
+        print("Log Likelihood after 0 iterations: {}".format(round(l, 5)))
 
-    log_likelihoods = []
-    bics = []
-    results = []
+    for i in range(1, iterations + 1):
+        prev_l = l
 
-    for k in range(kmin, kmax + 1):
-        pi, m, S, g, log_l = expectation_maximization(
-            X, k, iterations, tol, verbose
-        )
-
+        pi, m, S = maximization(X, g)
         if pi is None:
-            return None, None, None, None
+            return None, None, None, None, None
 
-        p = (k * d) + (k * d * (d + 1) / 2) + (k - 1)
-        bic = p * np.log(n) - 2 * log_l
+        g, l = expectation(X, pi, m, S)
+        if g is None:
+            return None, None, None, None, None
 
-        log_likelihoods.append(log_l)
-        bics.append(bic)
-        results.append((pi, m, S))
+        if verbose and i % 10 == 0:
+            print("Log Likelihood after {} iterations: {}".format(
+                i, round(l, 5)
+            ))
 
-    log_likelihoods = np.array(log_likelihoods)
-    bics = np.array(bics)
+        if abs(l - prev_l) <= tol:
+            if verbose and i % 10 != 0:
+                print("Log Likelihood after {} iterations: {}".format(
+                    i, round(l, 5)
+                ))
+            return pi, m, S, g, l
 
-    best_index = np.argmin(bics)
+    if verbose and iterations % 10 != 0:
+        print("Log Likelihood after {} iterations: {}".format(
+            iterations, round(l, 5)
+        ))
 
-    best_k = kmin + best_index
-    best_result = results[best_index]
-
-    return best_k, best_result, log_likelihoods, bics
+    return pi, m, S, g, l
