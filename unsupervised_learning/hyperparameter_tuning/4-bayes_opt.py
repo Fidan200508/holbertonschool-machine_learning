@@ -35,11 +35,11 @@ class BayesianOptimization:
         sigma = np.sqrt(sigma)
 
         if self.minimize:
-            y_sample = np.min(self.gp.Y)
-            improvement = y_sample - mu - self.xsi
-        else:
             y_sample = np.max(self.gp.Y)
             improvement = mu - y_sample - self.xsi
+        else:
+            y_sample = np.min(self.gp.Y)
+            improvement = y_sample - mu - self.xsi
 
         Z = np.zeros_like(mu)
         mask = sigma > 0
