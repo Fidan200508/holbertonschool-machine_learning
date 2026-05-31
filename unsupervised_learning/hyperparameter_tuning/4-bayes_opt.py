@@ -35,18 +35,18 @@ class BayesianOptimization:
         sigma = np.sqrt(sigma)
 
         if self.minimize:
-            best = np.min(self.gp.Y)
-            imp = best - mu - self.xsi
+            y_sample = np.min(self.gp.Y)
+            improvement = y_sample - mu - self.xsi
         else:
-            best = np.max(self.gp.Y)
-            imp = mu - best - self.xsi
+            y_sample = np.max(self.gp.Y)
+            improvement = mu - y_sample - self.xsi
 
         Z = np.zeros_like(mu)
         mask = sigma > 0
-        Z[mask] = imp[mask] / sigma[mask]
+        Z[mask] = improvement[mask] / sigma[mask]
 
         EI = np.zeros_like(mu)
-        EI[mask] = imp[mask] * norm.cdf(Z[mask]) + \
+        EI[mask] = improvement[mask] * norm.cdf(Z[mask]) + \
             sigma[mask] * norm.pdf(Z[mask])
 
         X_next = self.X_s[np.argmax(EI)]
