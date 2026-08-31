@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Word2Vec training module."""
 
-from gensim.models import Word2Vec
+import gensim
 
 
 def word2vec_model(
@@ -15,23 +15,8 @@ def word2vec_model(
     seed=0,
     workers=1
 ):
-    """Create, build, and train a Word2Vec model.
-
-    Args:
-        sentences: Sentences to train on.
-        vector_size: Dimensionality of word embeddings.
-        min_count: Minimum frequency required for a word.
-        window: Maximum context window size.
-        negative: Number of negative samples.
-        cbow: If True use CBOW, otherwise Skip-gram.
-        epochs: Number of training epochs.
-        seed: Random seed.
-        workers: Number of worker threads.
-
-    Returns:
-        The trained Word2Vec model.
-    """
-    model = Word2Vec(
+    """Create, build, and train a Word2Vec model."""
+    model = gensim.models.Word2Vec(
         vector_size=vector_size,
         min_count=min_count,
         window=window,
