@@ -65,10 +65,7 @@ class RNNDecoder(tf.keras.layers.Layer):
             axis=-1
         )
 
-        output, s = self.gru(
-            x,
-            initial_state=s_prev
-        )
+        output, s = self.gru(x)
 
         output = tf.reshape(
             output,
