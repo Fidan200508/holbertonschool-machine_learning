@@ -1,22 +1,17 @@
 #!/usr/bin/env python3
-"""
-Defines a single neuron performing binary classification
-"""
+"""Single neuron performing binary classification."""
+
 import numpy as np
 
 
 class Neuron:
-    """
-    Represents a single neuron performing binary classification
-    """
+    """Defines a single neuron for binary classification."""
+
     def __init__(self, nx):
-        """
-        Initializes the neuron
-        Args:
-            nx: number of input features
-        """
+        """Initialize the neuron."""
         if not isinstance(nx, int):
             raise TypeError("nx must be an integer")
+
         if nx < 1:
             raise ValueError("nx must be a positive integer")
 
@@ -26,32 +21,23 @@ class Neuron:
 
     @property
     def W(self):
-        """Getter for weights"""
+        """Return the weights vector."""
         return self.__W
 
     @property
     def b(self):
-        """Getter for bias"""
+        """Return the bias."""
         return self.__b
 
     @property
     def A(self):
-        """Getter for activated output"""
+        """Return the activated output."""
         return self.__A
 
     def forward_prop(self, X):
-        """
-        Calculates the forward propagation of the neuron
-        Args:
-            X: numpy.ndarray with shape (nx, m) containing input data
-        Returns:
-            The private attribute __A
-        """
-        # Linear transform: Z = WX + b
-        # Using np.matmul for matrix multiplication
+        """Calculate the forward propagation of the neuron."""
         z = np.matmul(self.__W, X) + self.__b
 
-        # Activation: Sigmoid function
         self.__A = 1 / (1 + np.exp(-z))
 
         return self.__A
