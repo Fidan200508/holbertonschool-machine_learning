@@ -12,7 +12,7 @@ class RNNEncoder(tf.keras.layers.Layer):
 
         Args:
             vocab: Size of the input vocabulary.
-            embedding: Dimensionality of embedding vectors.
+            embedding: Dimensionality of the embedding vectors.
             units: Number of hidden units in the GRU.
             batch: Batch size.
         """
@@ -34,7 +34,7 @@ class RNNEncoder(tf.keras.layers.Layer):
         )
 
     def initialize_hidden_state(self):
-        """Initialize the GRU hidden state with zeros.
+        """Initialize the hidden state with zeros.
 
         Returns:
             Tensor of shape (batch, units).
@@ -47,12 +47,12 @@ class RNNEncoder(tf.keras.layers.Layer):
         """Perform the forward pass of the encoder.
 
         Args:
-            x: Tensor of shape (batch, input_seq_len).
-            initial: Initial hidden state of shape (batch, units).
+            x: Tensor containing vocabulary indices.
+            initial: Initial hidden state.
 
         Returns:
-            outputs: GRU outputs for all time steps.
-            hidden: Final hidden state.
+            outputs: Outputs for all GRU time steps.
+            hidden: Final GRU hidden state.
         """
         x = self.embedding(x)
 
