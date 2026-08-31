@@ -102,6 +102,8 @@ class Node:
             self.right_child.__str__()
         )
 
+        if self.is_root:
+            return text
         return text[:-1]
 
 
