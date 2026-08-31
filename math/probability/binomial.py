@@ -40,11 +40,7 @@ class Binomial:
             ) / len(data)
 
             p = 1 - (variance / mean)
-
-            n = round(
-                mean / p
-            )
-
+            n = round(mean / p)
             p = mean / n
 
             self.n = int(n)
@@ -78,4 +74,19 @@ class Binomial:
             combination
             * (self.p ** k)
             * ((1 - self.p) ** (self.n - k))
+        )
+
+    def cdf(self, k):
+        """Calculate the CDF for a given number of successes."""
+        k = int(k)
+
+        if k < 0:
+            return 0
+
+        if k > self.n:
+            return 0
+
+        return sum(
+            self.pmf(i)
+            for i in range(k + 1)
         )
