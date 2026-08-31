@@ -102,7 +102,7 @@ class Node:
             self.right_child.__str__()
         )
 
-        return text
+        return text[:-1]
 
 
 class Leaf(Node):
