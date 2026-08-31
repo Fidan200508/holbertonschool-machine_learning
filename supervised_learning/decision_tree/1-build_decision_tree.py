@@ -52,8 +52,6 @@ class Node:
                        if self.right_child else self.depth)
         return max(self.depth, left_depth, right_depth)
 
-
-
     def count_nodes_below(self, only_leaves=False):
         """Count nodes below the current node."""
         left = self.left_child.count_nodes_below(
@@ -67,6 +65,8 @@ class Node:
             return left + right
 
         return 1 + left + right
+
+
 class Leaf(Node):
     """
     Represents a leaf node in a decision tree.
@@ -88,11 +88,11 @@ class Leaf(Node):
         """
         return self.depth
 
-
-
     def count_nodes_below(self, only_leaves=False):
         """Count this leaf."""
         return 1
+
+
 class Decision_Tree:
     """
     Represents a decision tree.
