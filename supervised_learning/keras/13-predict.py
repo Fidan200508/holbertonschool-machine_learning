@@ -1,0 +1,12 @@
+#!/usr/bin/env python3
+"""Makes predictions using a Keras neural network."""
+
+import tensorflow.keras as K
+
+
+def predict(network, data, verbose=False):
+    """Return the predictions of a Keras model."""
+    return network.predict(
+        data,
+        verbose=verbose
+    )
