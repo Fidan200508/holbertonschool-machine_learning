@@ -5,7 +5,7 @@ import tensorflow.keras as K
 
 
 def predict(network, data, verbose=False):
-    """Return the predictions of a Keras model."""
+    """Make predictions using a neural network."""
     return network.predict(
         data,
         verbose=verbose
