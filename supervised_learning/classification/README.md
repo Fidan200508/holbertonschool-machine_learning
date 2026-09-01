@@ -1,10 +1,13 @@
-# Classification
+# Keras
 
-This directory contains implementations of various classification algorithms, starting from basic neurons to deep neural networks.
+This directory contains projects and exercises for building and training neural networks using TensorFlow Keras.
 
-## Tasks
+Topics include:
 
-### 0. Neuron
-- **File:** `0-neuron.py`
-- A class representing a single neuron for binary classification.
-- Handles initialization of weights ($), bias ($), and activated output ($).
+- Sequential models
+- Dense layers
+- Activation functions
+- L2 regularization
+- Dropout
+- Model compilation
+- Training and evaluation
