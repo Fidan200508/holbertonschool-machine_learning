@@ -4,49 +4,38 @@
 import numpy as np
 
 
-def generate_episode(env, policy, max_steps):
-    """Generate one episode following a policy."""
-    episode = [[], []]
-    state = env.reset()[0]
-    desc = env.unwrapped.desc.reshape(env.observation_space.n)
+def game(env, state, policy, max_steps):
+    """Generate an episode using the given policy."""
+    episode = []
 
     for _ in range(max_steps):
         action = policy(state)
-        next_state, _, terminated, truncated, _ = env.step(action)
+        next_state, reward, terminated, truncated, _ = env.step(action)
 
-        episode[0].append(state)
-
-        if desc[next_state] == b'H':
-            episode[1].append(-1)
-            break
-
-        if desc[next_state] == b'G':
-            episode[1].append(1)
-            break
-
-        episode[1].append(0)
-        state = next_state
+        episode.append((state, action, reward))
 
         if terminated or truncated:
             break
 
-    return episode
+        state = next_state
+
+    return np.array(episode, dtype=int)
 
 
 def monte_carlo(env, V, policy, episodes=5000, max_steps=100,
                 alpha=0.1, gamma=0.99):
     """Perform the Monte Carlo algorithm."""
-    discounts = np.array([gamma ** i for i in range(max_steps)])
+    for i in range(episodes):
+        state = env.reset()[0]
+        G = 0
 
-    for _ in range(episodes):
-        episode = generate_episode(env, policy, max_steps)
+        episode = game(env, state, policy, max_steps)
 
-        for i in range(len(episode[0])):
-            rewards = np.array(episode[1][i:])
-            discount = discounts[:len(rewards)]
-            G = np.sum(rewards * discount)
+        for step in episode[::-1]:
+            state, _, reward = step
+            G = gamma * G + reward
 
-            state = episode[0][i]
-            V[state] += alpha * (G - V[state])
+            if state not in episode[:i, 0]:
+                V[state] = V[state] + alpha * (G - V[state])
 
     return V
