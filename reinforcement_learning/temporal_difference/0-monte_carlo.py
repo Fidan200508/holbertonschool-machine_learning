@@ -10,25 +10,16 @@ def monte_carlo(env, V, policy, episodes=5000, max_steps=100,
     for _ in range(episodes):
         state = env.reset()[0]
         episode = []
-        completed = False
 
         for _ in range(max_steps):
             action = policy(state)
-
             next_state, reward, terminated, truncated, _ = env.step(action)
 
             episode.append((state, reward))
             state = next_state
 
-            if terminated:
-                completed = True
+            if terminated or truncated:
                 break
-
-            if truncated:
-                break
-
-        if not completed:
-            continue
 
         G = 0
 
@@ -36,11 +27,7 @@ def monte_carlo(env, V, policy, episodes=5000, max_steps=100,
             state, reward = episode[i]
             G = reward + gamma * G
 
-            previous_states = [
-                step[0] for step in episode[:i]
-            ]
-
-            if state not in previous_states:
+            if state not in [x[0] for x in episode[:i]]:
                 V[state] += alpha * (G - V[state])
 
     return V
