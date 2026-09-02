@@ -17,13 +17,12 @@ def epsilon_greedy(Q, state, epsilon):
 def sarsa_lambtha(env, Q, lambtha, episodes=5000, max_steps=100,
                   alpha=0.1, gamma=0.99, epsilon=1,
                   min_epsilon=0.1, epsilon_decay=0.05):
-    """Update a Q-table using SARSA(lambda)."""
+    """Perform the SARSA(lambda) algorithm."""
     initial_epsilon = epsilon
 
     for episode in range(episodes):
         state = env.reset()[0]
         action = epsilon_greedy(Q, state, epsilon)
-
         eligibility = np.zeros_like(Q)
 
         for _ in range(max_steps):
@@ -55,6 +54,6 @@ def sarsa_lambtha(env, Q, lambtha, episodes=5000, max_steps=100,
 
         epsilon = min_epsilon + (
             initial_epsilon - min_epsilon
-        ) * np.exp(-epsilon_decay * (episode + 1))
+        ) * np.exp(-epsilon_decay * episode)
 
     return Q
